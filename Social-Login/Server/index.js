@@ -8,10 +8,12 @@ const app = express();
 
 app.use(
   session({
-    secret: "secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    maxAge: 3600000,
+    cookie: {
+      maxAge: 60000 * 60,
+    },
   })
 );
 
@@ -27,6 +29,8 @@ app.use(passport.session());
 
 app.use("/auth", authRoute);
 
-app.listen("5000", () => {
-  console.log("Server is running on port 5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
