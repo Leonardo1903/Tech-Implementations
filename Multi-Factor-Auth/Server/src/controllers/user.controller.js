@@ -56,9 +56,16 @@ export const logout = async (req, res) => {
   }
   req.logout((err) => {
     if (err) {
-      return res.status(500).json({ message: "Error logging out user" });
+      return next(err);
     }
-    res.status(200).json({ message: "User logged out successfully" });
+    req.session.destroy((err) => {
+      if (err) {
+        return next(err);
+      }
+      //Clear cookies
+      res.clearCookie("connect.sid");
+      res.status(200).json({ message: "User logged out successfully" });
+    });
   });
 };
 
